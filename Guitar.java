@@ -24,7 +24,7 @@ public class Guitar extends JPanel {
     Mfret[] mFrets;
     ArrayList<PressLabel> pressLabels;
 
-    Guitar(String[] strTune){
+    Guitar(String[] strTune) throws Exception {
         super();
         MTune tune = new MTune(strTune);
         createMStrings(tune);
@@ -33,6 +33,7 @@ public class Guitar extends JPanel {
         this.setBackground(new Color(212,168,83));
         this.setPreferredSize(GUITAR_SIZE);
         this.setLayout(new GridLayout());
+        this.setScale(MScale.majString, 0);
     }
 
     public void paintComponent(Graphics g) {

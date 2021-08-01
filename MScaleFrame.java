@@ -6,7 +6,7 @@ public class MScaleFrame extends JFrame {
 
     static Guitar guitar;
 
-    MScaleFrame(String[] strTune){
+    MScaleFrame(String[] strTune) throws Exception {
         super();
         this.setTitle("just another humble effort");
         this.setResizable(false);

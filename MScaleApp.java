@@ -7,7 +7,6 @@ public class MScaleApp {
 
         MTune.initNoteMap();
         MScaleFrame frame = new MScaleFrame(MTune.classicTune);
-        frame.guitar.setScale("Min", 2);
 
     }
 
