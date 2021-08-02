@@ -3,16 +3,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuPanel extends JPanel {
+class MenuPanel extends JPanel {
 
-    JPopupMenu baseMenu;
-    JPopupMenu scaleMenu;
+    private JPopupMenu baseMenu;
+    private JPopupMenu scaleMenu;
 
-    JButton baseButton;
-    JButton scaleButton;
+    private JButton baseButton;
+    private JButton scaleButton;
 
-    JMenuItem majItem, minItem;
-    JMenuItem cItem, cshItem, dItem, dshItem, eItem, fItem, fshItem, gItem, gshItem, aItem, ashItem, bItem;
+    private JMenuItem majItem, minItem;
+    private JMenuItem cItem, cshItem, dItem, dshItem, eItem, fItem, fshItem, gItem, gshItem, aItem, ashItem, bItem;
 
     MenuPanel(){
         super();
@@ -81,7 +81,7 @@ public class MenuPanel extends JPanel {
         this.add(scaleButton);
     }
 
-    class ScaleActionListener implements ActionListener {
+    static class ScaleActionListener implements ActionListener {
         String scale;
 
         ScaleActionListener(String scale){
@@ -99,7 +99,7 @@ public class MenuPanel extends JPanel {
         }
     }
 
-    class BaseActionListener implements ActionListener {
+    static class BaseActionListener implements ActionListener {
         String base;
 
         BaseActionListener(String base){
@@ -109,7 +109,7 @@ public class MenuPanel extends JPanel {
         public void actionPerformed(ActionEvent ev) {
             try {
                 MScaleFrame.guitar.clearScale();
-                MScaleFrame.guitar.setScale(Guitar.currentScale, MTune.strNoteToInt(base));
+                MScaleFrame.guitar.setScale(Guitar.currentScale, MScale.strNoteToInt(base));
                 MScaleFrame.guitar.repaint();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -117,7 +117,7 @@ public class MenuPanel extends JPanel {
         }
     }
 
-    class ButtonActionListener implements ActionListener{
+    static class ButtonActionListener implements ActionListener{
         JPopupMenu menu;
         JButton button;
         ButtonActionListener(JPopupMenu menu, JButton button){

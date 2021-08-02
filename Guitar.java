@@ -12,26 +12,23 @@ public class Guitar extends JPanel {
     static final int STRING_HEIGHT = INTERNAL_STRING_PAD/10;//4px
     static final int FRET_WIDTH = STRING_HEIGHT;
     static final int FRET_PAD = (GUITAR_WIDTH - NUM_OF_FRETS*FRET_WIDTH)/NUM_OF_FRETS;//56px
-    static final Dimension GUITAR_SIZE = new Dimension(GUITAR_WIDTH,GUITAR_HEIGHT);
 
     static String currentScale;
     static int currentBase;
 
-    Graphics graphics;
-    Image image;
-
-    MString[] mStrings;
-    Mfret[] mFrets;
-    ArrayList<PressLabel> pressLabels;
+    private MString[] mStrings;
+    private Mfret[] mFrets;
+    private ArrayList<PressLabel> pressLabels;
 
     Guitar(String[] strTune) throws Exception {
         super();
+        Dimension gtr_dim = new Dimension(GUITAR_WIDTH,GUITAR_HEIGHT);
         MTune tune = new MTune(strTune);
         createMStrings(tune);
         createMFrets();
         pressLabels = new ArrayList<PressLabel>();
         this.setBackground(new Color(212,168,83));
-        this.setPreferredSize(GUITAR_SIZE);
+        this.setPreferredSize(gtr_dim);
         this.setLayout(new GridLayout());
         this.setScale(MScale.majString, 0);
     }
@@ -66,8 +63,8 @@ public class Guitar extends JPanel {
 
     private void drawPressLabels(Graphics g){
         if(!pressLabels.isEmpty())
-            for(int i = 0; i < pressLabels.size(); i++){
-                pressLabels.get(i).drawLabel(g);
+            for (PressLabel pressLabel : pressLabels) {
+                pressLabel.drawLabel(g);
             }
     }
 
@@ -87,7 +84,7 @@ public class Guitar extends JPanel {
             for(int j = 0; j < NUM_OF_FRETS; j++){
                 testNote = (mStrings[i].getBaseNote() + j) % MScale.NUM_OF_NOTES;
                 if(scale.isInScale(testNote)){
-                    note = MTune.getNoteStrFromInt(testNote);
+                    note = MScale.getNoteStrFromInt(testNote);
                     if(note.length()>1){
                         x -= 8;
                     }
@@ -106,8 +103,8 @@ public class Guitar extends JPanel {
 
     void clearScale(){
         if(!pressLabels.isEmpty()) {
-            for (int i = 0; i < pressLabels.size(); i++) {
-                this.remove(pressLabels.get(i));
+            for (PressLabel pressLabel : pressLabels) {
+                this.remove(pressLabel);
             }
             pressLabels.clear();
         }
