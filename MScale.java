@@ -2,8 +2,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 class MScale {
-    static HashMap<String, Integer> noteMap;
+    /**This class is an abstraction of a musical scale.
+     * each note is represented as a natural number modulo 12, while 0 is for C
+     * @noteMap holds a mapping between a number and the note that it represents
+     * @scaleNotes is a container of all notes that are in current scale.**/
     static final int NUM_OF_NOTES = 12;
+    private static HashMap<String, Integer> noteMap;
     private static int[] majSteps = {2, 2, 1, 2, 2, 2, 1};
     private static int[] minSteps = {2, 1, 2, 2, 1, 2 ,2};
     static final String majString = "Maj";
@@ -11,7 +15,7 @@ class MScale {
 
     private ArrayList<Integer> scaleNotes;
 
-    MScale(String scaleType, int baseNote) throws Exception {
+    MScale(String scaleType, int baseNote) throws MScaleException {
         int[] steps;
 
         if (scaleType.equals(majString)) {
@@ -20,7 +24,7 @@ class MScale {
             if (scaleType.equals(minString)) {
                 steps = minSteps;
             } else {
-                throw new Exception();
+                throw new MScaleException(MScaleException.invScaleInitStr);
         }
     }
         scaleNotes = new ArrayList<Integer>();
@@ -31,6 +35,8 @@ class MScale {
         }
     }
 
+    /**to check whether a given note is in the current scale. Used when computing
+     * which fret should appear on the neck of a guitar as relevant for the current scale**/
     boolean isInScale(int note){
         return scaleNotes.contains(note);
     }
@@ -47,21 +53,9 @@ class MScale {
 
         noteMap.put("C#", 1);
         noteMap.put("D#", 3);
-        //noteMap.put("E#", 5);
         noteMap.put("F#", 6);
         noteMap.put("G#", 8);
         noteMap.put("A#", 10);
-        //noteMap.put("B#", 0);
-
-        /*
-        noteMap.put("Cb", 11);
-        noteMap.put("Db", 1);
-        noteMap.put("Eb", 3);
-        noteMap.put("Fb", 4);
-        noteMap.put("Gb", 6);
-        noteMap.put("Ab", 8);
-        noteMap.put("Bb", 10);
-        */
     }
 
     static int strNoteToInt(String note){

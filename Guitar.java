@@ -3,6 +3,15 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Guitar extends JPanel {
+
+    /**This class is a representation of a guitar's neck, it holds such global
+     * information as guitar's measurements, guitar's tuning and a scale that will be
+     * represented on the neck of a guitar
+     * @mFrets holds objects that represent the frets of a guitar,
+     * @mStrings - same holds for this field with respect to strings of a guitar,
+     * @strLabels - is a dynamic container of the labels that represent places on the
+     * neck of a guitar where a user should press in order to get a note in a scale from the input.**/
+
     static final int NUM_OF_STRINGS = 6;
     static final int NUM_OF_FRETS = 20;
     static final int GUITAR_WIDTH = 1200;
@@ -13,20 +22,20 @@ public class Guitar extends JPanel {
     static final int FRET_WIDTH = STRING_HEIGHT;
     static final int FRET_PAD = (GUITAR_WIDTH - NUM_OF_FRETS*FRET_WIDTH)/NUM_OF_FRETS;//56px
 
-    static String currentScale;
-    static int currentBase;
+    String currentScale;
+    int currentBase;
 
     private MString[] mStrings;
     private Mfret[] mFrets;
-    private ArrayList<PressLabel> pressLabels;
+    private ArrayList<StrLabel> StrLabels;
 
-    Guitar(String[] strTune) throws Exception {
+    Guitar(String[] strTune) throws MScaleException {
         super();
         Dimension gtr_dim = new Dimension(GUITAR_WIDTH,GUITAR_HEIGHT);
         MTune tune = new MTune(strTune);
         createMStrings(tune);
         createMFrets();
-        pressLabels = new ArrayList<PressLabel>();
+        StrLabels = new ArrayList<StrLabel>();
         this.setBackground(new Color(212,168,83));
         this.setPreferredSize(gtr_dim);
         this.setLayout(new GridLayout());
@@ -40,7 +49,7 @@ public class Guitar extends JPanel {
 
     private void draw(Graphics g){
         drawMStrings(g);
-        drawPressLabels(g);
+        drawStrLabels(g);
         drawMFrets(g);
     }
 
@@ -61,38 +70,37 @@ public class Guitar extends JPanel {
         }
     }
 
-    private void drawPressLabels(Graphics g){
-        if(!pressLabels.isEmpty())
-            for (PressLabel pressLabel : pressLabels) {
-                pressLabel.drawLabel(g);
+    private void drawStrLabels(Graphics g){
+        if(!StrLabels.isEmpty())
+            for (StrLabel StrLabel : StrLabels) {
+                StrLabel.drawLabel(g);
             }
     }
 
-    void setScale(String scaleType, int baseNote) throws Exception {
+    /**the most important method of this class and probably the whole app.
+     * Here the neck of a guitar gets labeled in relevant places that will show strings and frets
+     * that create the desired notes with respect to a current sCale which is set by:
+     * @param scaleType - the type of a scale: minor, major...
+     * @param baseNote - the base note upon which the scale is built: C, D...**/
+    void setScale(String scaleType, int baseNote) throws MScaleException {
         currentBase = baseNote;
         currentScale = scaleType;
 
         MScale scale = new MScale(scaleType, baseNote);
         int testNote;
-        PressLabel label;
+        StrLabel label;
         int x;
-        int y = EXTERNAL_STRING_PAD + 2*STRING_HEIGHT;
+        int y = EXTERNAL_STRING_PAD;
         String note;
 
         for(int i = 0; i < NUM_OF_STRINGS; i++){
-            x = FRET_PAD/2 - 7;
+            x = FRET_PAD/2 ;
             for(int j = 0; j < NUM_OF_FRETS; j++){
                 testNote = (mStrings[i].getBaseNote() + j) % MScale.NUM_OF_NOTES;
                 if(scale.isInScale(testNote)){
                     note = MScale.getNoteStrFromInt(testNote);
-                    if(note.length()>1){
-                        x -= 8;
-                    }
-                    label = new PressLabel(x, y, i*NUM_OF_FRETS + j, note);
-                    if(note.length()>1){
-                        x += 8;
-                    }
-                    pressLabels.add(label);
+                    label = new StrLabel(x, y, note);
+                    StrLabels.add(label);
                     this.add(label);
                 }
                 x += FRET_PAD + FRET_WIDTH;
@@ -101,12 +109,14 @@ public class Guitar extends JPanel {
         }
     }
 
+    /**This method will clear all the labels of a scale and will leave the neck
+     * of a guitar clear - just strings and frets. **/
     void clearScale(){
-        if(!pressLabels.isEmpty()) {
-            for (PressLabel pressLabel : pressLabels) {
-                this.remove(pressLabel);
+        if(!StrLabels.isEmpty()) {
+            for (StrLabel StrLabel : StrLabels) {
+                this.remove(StrLabel);
             }
-            pressLabels.clear();
+            StrLabels.clear();
         }
     }
 
