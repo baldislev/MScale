@@ -10,68 +10,78 @@ class MenuPanel extends JPanel {
      * @scaleButton is for the scale type.**/
     private JPopupMenu baseMenu;
     private JPopupMenu scaleMenu;
+    private JPopupMenu stringsMenu;
+    private JPopupMenu sixStrMenu;
+    private JPopupMenu fourStrMenu;
 
     private JLabel displayScale;
 
     private JButton baseButton;
     private JButton scaleButton;
-
-    private JMenuItem majItem, minItem;
-    private JMenuItem cItem, cshItem, dItem, dshItem, eItem, fItem, fshItem, gItem, gshItem, aItem, ashItem, bItem;
+    private JButton stringsButton;
+    private JButton tuneButton;
 
     MenuPanel(){
         super();
 
-        this.setPreferredSize(new Dimension(MScaleFrame.FRAME_WIDTH, Guitar.INTERNAL_STRING_PAD));
+        this.setPreferredSize(new Dimension(MScaleFrame.FRAME_WIDTH, Instrument.EXTERNAL_STRING_PAD*2));
         this.setBackground(new Color(157, 126, 104));
-        //MENU:
-        baseMenu = new JPopupMenu();
-        scaleMenu = new JPopupMenu();
+
+        //BUTTONS:
+        baseButton = new JButton("Base");
+        scaleButton = new JButton("Scale");
+        stringsButton = new JButton("#Strings");
+        tuneButton = new JButton("Tune");
+
         //AREA THAT WILL DISPLAY THE CURRENT SCALE:
         displayScale = new JLabel();
         displayScale.setFont(new Font("Arial", Font.BOLD, 15));
         displayScale.setPreferredSize(new Dimension(200,20));
         setDisplayScale();
 
-        //BUTTONS:
-        baseButton = new JButton("Base");
-        scaleButton = new JButton("Scale");
+        //MENUs:
+        baseMenu = new JPopupMenu();
+        scaleMenu = new JPopupMenu();
+        stringsMenu = new JPopupMenu();
+        sixStrMenu = new JPopupMenu();
+        fourStrMenu = new JPopupMenu();
+
+
         //ITEMS FOR SCALE MENU
-        majItem = new JMenuItem(MScale.majString);
+        JMenuItem majItem = new JMenuItem(MScale.majString);
         majItem.addActionListener(new ScaleBaseActionListener(MScale.majString, false));
-        minItem = new JMenuItem("Min");
+        JMenuItem minItem = new JMenuItem("Min");
         minItem.addActionListener(new ScaleBaseActionListener(MScale.minString, false));
 
         scaleMenu.add(majItem);
         scaleMenu.add(minItem);
-        scaleMenu.setSize(scaleButton.getWidth(), scaleMenu.getHeight());
         scaleMenu.setPreferredSize(new Dimension(scaleButton.getPreferredSize().width,
                 scaleMenu.getPreferredSize().height));
 
         //ITEMS FOR BASE MENU:
-        cItem = new JMenuItem("C");
+        JMenuItem cItem = new JMenuItem("C");
         cItem.addActionListener(new ScaleBaseActionListener("C", true));
-        cshItem = new JMenuItem("C#");
+        JMenuItem cshItem = new JMenuItem("C#");
         cshItem.addActionListener(new ScaleBaseActionListener("C#", true));
-        dItem = new JMenuItem("D");
+        JMenuItem dItem = new JMenuItem("D");
         dItem.addActionListener(new ScaleBaseActionListener("D", true));
-        dshItem = new JMenuItem("D#");
+        JMenuItem dshItem = new JMenuItem("D#");
         dshItem.addActionListener(new ScaleBaseActionListener("D#", true));
-        eItem = new JMenuItem("E");
+        JMenuItem eItem = new JMenuItem("E");
         eItem.addActionListener(new ScaleBaseActionListener("E", true));
-        fItem = new JMenuItem("F");
+        JMenuItem fItem = new JMenuItem("F");
         fItem.addActionListener(new ScaleBaseActionListener("F", true));
-        fshItem = new JMenuItem("F#");
+        JMenuItem fshItem = new JMenuItem("F#");
         fshItem.addActionListener(new ScaleBaseActionListener("F#", true));
-        gItem = new JMenuItem("G");
+        JMenuItem gItem = new JMenuItem("G");
         gItem.addActionListener(new ScaleBaseActionListener("G", true));
-        gshItem = new JMenuItem("G#");
+        JMenuItem gshItem = new JMenuItem("G#");
         gshItem.addActionListener(new ScaleBaseActionListener("G#", true));
-        aItem = new JMenuItem("A");
+        JMenuItem aItem = new JMenuItem("A");
         aItem.addActionListener(new ScaleBaseActionListener("A", true));
-        ashItem = new JMenuItem("A#");
+        JMenuItem ashItem = new JMenuItem("A#");
         ashItem.addActionListener(new ScaleBaseActionListener("A#", true));
-        bItem = new JMenuItem("B");
+        JMenuItem bItem = new JMenuItem("B");
         bItem.addActionListener(new ScaleBaseActionListener("B", true));
 
         baseMenu.add(cItem);
@@ -86,14 +96,57 @@ class MenuPanel extends JPanel {
         baseMenu.add(aItem);
         baseMenu.add(ashItem);
         baseMenu.add(bItem);
-
-        scaleButton.setComponentPopupMenu(scaleMenu);
-        baseButton.setComponentPopupMenu(baseMenu);
         baseMenu.setPreferredSize(new Dimension(baseButton.getPreferredSize().width,
                 baseMenu.getPreferredSize().height));
+
+        //ITEMS FOR STRINGSMENU:
+        JMenuItem sixStrItem = new JMenuItem("6 strings");
+        sixStrItem.addActionListener(new NumOfStringsActionListener(6));
+        JMenuItem fourStrItem = new JMenuItem("4 strings");
+        fourStrItem.addActionListener(new NumOfStringsActionListener(4));
+
+        stringsMenu.add(sixStrItem);
+        stringsMenu.add(fourStrItem);
+
+        //ITEMS FOR SIXSTRINGMENU:
+        JMenuItem classGtrItem = new JMenuItem(MTune.classicGuitarStr);
+        classGtrItem.addActionListener(new TuneItemActionListener());
+        JMenuItem dropDGtrItem = new JMenuItem(MTune.dropDStr);
+        dropDGtrItem.addActionListener(new TuneItemActionListener());
+
+        sixStrMenu.add(classGtrItem);
+        sixStrMenu.add(dropDGtrItem);
+        //ITEMS FOR FOURSTRMENU:
+        JMenuItem classUkeItem = new JMenuItem(MTune.classicUkeStr);
+        classUkeItem.addActionListener(new TuneItemActionListener());
+        JMenuItem mandolinItem = new JMenuItem(MTune.mandolinStr);
+        mandolinItem.addActionListener(new TuneItemActionListener());
+
+        fourStrMenu.add(classUkeItem);
+        fourStrMenu.add(mandolinItem);
+
+
+        //Connecting buttons with their corresponding menus and setting actionListeners:
+        scaleButton.setComponentPopupMenu(scaleMenu);
+        baseButton.setComponentPopupMenu(baseMenu);
+        stringsButton.setComponentPopupMenu(stringsMenu);
+        switch(MScaleFrame.instrument.getNumOfStr()){
+            case 6:
+                tuneButton.setComponentPopupMenu(sixStrMenu);
+                break;
+            case 4:
+                tuneButton.setComponentPopupMenu(fourStrMenu);
+                break;
+        }
         
-        scaleButton.addActionListener(new ButtonActionListener(scaleMenu, scaleButton));
-        baseButton.addActionListener(new ButtonActionListener(baseMenu, baseButton));
+        scaleButton.addActionListener(new ButtonActionListener(scaleButton));
+        baseButton.addActionListener(new ButtonActionListener(baseButton));
+        stringsButton.addActionListener(new ButtonActionListener(stringsButton));
+        tuneButton.addActionListener(new ButtonActionListener(tuneButton));
+
+
+        this.add(stringsButton);
+        this.add(tuneButton);
         this.add(baseButton);
         this.add(scaleButton);
         this.add(displayScale);
@@ -101,13 +154,15 @@ class MenuPanel extends JPanel {
     }
 
     private void  setDisplayScale(){
-        String strNote = MScale.getNoteStrFromInt(MScaleFrame.guitar.currentBase);
-        displayScale.setText("Current Scale: " + strNote + " " + MScaleFrame.guitar.currentScale);
+        String strNote = MScale.getNoteStrFromInt(MScaleFrame.instrument.currentBase);
+        displayScale.setText(strNote + " " + MScaleFrame.instrument.currentScale +
+                " " + MScaleFrame.instrument.currentTune);
         displayScale.repaint();
     }
 
     class ScaleBaseActionListener implements ActionListener {
-        /**Action listener for scaleButton and or baseButton
+        /**Action listener for event of choosing a menu item of ScaleButton or BaseButton.
+         * Responsible for modifying the display of a scale of current instrument.
          * @isForBase is a boolean that helps differentiate between parameters of a scale that needed
          * to be modified - either base or scaleType. This decision is made inside actionPerformed method**/
         String scaleSetting;
@@ -119,36 +174,84 @@ class MenuPanel extends JPanel {
 
         public void actionPerformed(ActionEvent ev) {
             try {
-                MScaleFrame.guitar.clearScale();
+                MScaleFrame.instrument.clearScale();
                 if(isForBase){
-                    MScaleFrame.guitar.setScale(MScaleFrame.guitar.currentScale, MScale.strNoteToInt(scaleSetting));
+                    MScaleFrame.instrument.setScale(MScaleFrame.instrument.currentScale, MScale.strNoteToInt(scaleSetting));
                 } else {
-                    MScaleFrame.guitar.setScale(scaleSetting, MScaleFrame.guitar.currentBase);
+                    MScaleFrame.instrument.setScale(scaleSetting, MScaleFrame.instrument.currentBase);
                 }
-                MScaleFrame.guitar.repaint();
+                MScaleFrame.instrument.repaint();
                 setDisplayScale();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        
-        private void setDisplayScale(){
-            String strNote = MScale.getNoteStrFromInt(MScaleFrame.guitar.currentBase);
-            displayScale.setText("Current Scale: " + strNote + " " + MScaleFrame.guitar.currentScale);
-            displayScale.repaint();
+    }
+
+    class NumOfStringsActionListener implements ActionListener{
+        /**Handler for numOfStrings button which renders a new instrument with desired number of
+         * strings with a classic tune for each variant. The handler also changing the content
+         * of the tuneMenu.**/
+        int numOfStrings;
+        NumOfStringsActionListener(int numOfStrings){
+            this.numOfStrings = numOfStrings;
+        }
+        public void actionPerformed(ActionEvent ev){
+            if(MScaleFrame.instrument.getNumOfStr() == numOfStrings)
+                return;
+
+            switch (numOfStrings){
+                case 6:
+                    try {
+                        MScaleApp.frame.retune(MTune.classicGuitarStr);
+                    } catch (MScaleException e) {
+                        e.printStackTrace();
+                    }
+                    tuneButton.setComponentPopupMenu(sixStrMenu);
+                    break;
+                case 4:
+                    try {
+                        MScaleApp.frame.retune(MTune.classicUkeStr);
+                    } catch (MScaleException e) {
+                        e.printStackTrace();
+                    }
+                    tuneButton.setComponentPopupMenu(fourStrMenu);
+                    break;
+                default:
+                    try {
+                        throw new Exception();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+            setDisplayScale();
+        }
+    }
+
+    class TuneItemActionListener implements ActionListener{
+        public void actionPerformed(ActionEvent ev){
+            String context = ((JMenuItem)ev.getSource()).getText();
+
+            try {
+                MScaleApp.frame.retune(context);
+            } catch (MScaleException e) {
+                e.printStackTrace();
+            }
+            setDisplayScale();
         }
     }
 
 
     static class ButtonActionListener implements ActionListener{
-        JPopupMenu menu;
+        /**Action listener for displaying the menu content of each button**/
         JButton button;
-        ButtonActionListener(JPopupMenu menu, JButton button){
-            this.menu = menu;
+        ButtonActionListener(JButton button){
             this.button = button;
         }
 
         public void actionPerformed(ActionEvent ev) {
+            JPopupMenu menu = button.getComponentPopupMenu();
             menu.show(button, 0, button.getBounds().y
                     + button.getBounds().height);
         }

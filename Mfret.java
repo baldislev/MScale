@@ -1,11 +1,9 @@
 import java.awt.*;
 
 class Mfret extends Rectangle {
-    private int id;
 
-    Mfret(int x, int y, int width, int height, int id){
+    Mfret(int x, int y, int width, int height){
         super(x, y, width, height);
-        this.id = id;
     }
 
     void draw(Graphics g){
